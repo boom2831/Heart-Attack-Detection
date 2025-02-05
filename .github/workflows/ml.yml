@@ -1,4 +1,4 @@
-name: Python CI
+name: Python CI Build
 
 on:
   push:
@@ -10,21 +10,47 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # You can use 'ubuntu-latest' or 'windows-latest' or 'macos-latest'
 
     steps:
+      # Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Set up Python environment
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.9'  # Set the version of Python
 
+      # Install dependencies
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+          pip install jupyter  # Install Jupyter if not in requirements.txt
 
-      - name: Run tests
+      # Run tests (optional)
+      - name: Run Tests
         run: |
-          pytest
+          # Example of running tests using pytest
+          pytest tests/  # Modify based on your test folder location
+
+      # Run Jupyter Notebook (execute notebook)
+      - name: Run Jupyter Notebook
+        run: |
+          pip install nbconvert  # Install nbconvert if not included in requirements.txt
+          jupyter nbconvert --execute --to notebook --inplace Heart_attack.ipynb
+
+      # Build the project (example - if your project needs packaging or compiling)
+      - name: Build Project
+        run: |
+          # Example: Run your build commands, if necessary
+          # If you're packaging, compiling, etc., add those commands here
+          python setup.py build  # Example for Python projects that use setup.py
+          
+      # Upload the executed notebook (optional, if you want to store the executed notebook)
+      - name: Upload executed notebook
+        uses: actions/upload-artifact@v3
+        with:
+          name: executed-notebook
+          path: Heart_attack.ipynb
